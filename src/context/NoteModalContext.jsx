@@ -6,20 +6,23 @@ export const NoteModalContext = createContext(null)
 const NoteModalProvider = ({ children }) => {
   const { isOpen, onClose, onOpen } = useDisclosure()
   const [type, setType] = useState('create')
+  const [noteData, setNoteData] = useState(null)
 
   const openModalForCreate = () => {
     onOpen()
     setType('create')
   }
 
-  const openModalForUpdate = () => {
+  const openModalForUpdate = (data) => {
     onOpen()
     setType('update')
+    setNoteData(data)
   }
 
   const closeModal = () => {
     onClose()
     setType('create')
+    setNoteData(null)
   }
 
   return (
@@ -30,6 +33,7 @@ const NoteModalProvider = ({ children }) => {
         openModalForCreate,
         openModalForUpdate,
         closeModal,
+        noteData
       }}
     >
       {children}

@@ -21,25 +21,54 @@ const NotesProvider = ({ children }) => {
         setIsLoading(false)
       })
   }
-  const createNote = (title, description) => {
+  const createNote = (formData) => {
+    setIsLoading(true)
     api
-      .post(
-        '/note',
-        {
-          title,
-          description,
+      .post('/note', formData, {
+        headers: {
+          Authorization: JSON.parse(localStorage.getItem('accessToken')),
+          'Content-Type': 'multipart/form-data',
         },
-        {
-          headers: {
-            Authorization: JSON.parse(localStorage.getItem('accessToken')),
-          },
-        }
-      )
+      })
       .then((result) => {
+        setIsLoading(false)
         setNotes([...notes, result.data.note])
       })
   }
-
+  const deleteNote = (id) => {
+    setIsLoading(true)
+    api
+      .delete(`/note/${id}`, {
+        headers: {
+          Authorization: JSON.parse(localStorage.getItem('accessToken')),
+        },
+      })
+      .then((result) => {
+        setIsLoading(false)
+        setNotes(notes.filter((note) => note.id !== id))
+      })
+  }
+  const updateNote = ({ id, img, ...rest }) => {
+    setIsLoading(true)
+    api
+      .put(`/note/${id}`, rest, {
+        headers: {
+          Authorization: JSON.parse(localStorage.getItem('accessToken')),
+        },
+      })
+      .then((result) => {
+        setIsLoading(false)
+        setNotes(
+          notes.map((note) => {
+            if (note.id === result.data.note.id) {
+              return result.data.note
+            } else {
+              return note
+            }
+          })
+        )
+      })
+  }
   return (
     <NotesContext.Provider
       value={{
@@ -47,6 +76,8 @@ const NotesProvider = ({ children }) => {
         isLoading,
         getAllNotes,
         createNote,
+        deleteNote,
+        updateNote,
       }}
     >
       {children}
