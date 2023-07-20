@@ -9,6 +9,7 @@ import NotesProvider from './context/NotesContext.jsx'
 import NoteModalProvider from './context/NoteModalContext.jsx'
 import { CollectionProvider } from './context/CollectionContext.jsx'
 import { CollectionPopoverProvider } from './context/CollectionPopoverContext.jsx'
+import { CollectionNotesProvider } from './context/CollectionNotesContext.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -17,11 +18,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <AuthProvider>
           <CollectionProvider>
             <CollectionPopoverProvider>
-              <NotesProvider>
-                <NoteModalProvider>
-                  <App />
-                </NoteModalProvider>
-              </NotesProvider>
+              <CollectionNotesProvider>
+                <NotesProvider>
+                  <NoteModalProvider>
+                    <App />
+                  </NoteModalProvider>
+                </NotesProvider>
+              </CollectionNotesProvider>
             </CollectionPopoverProvider>
           </CollectionProvider>
         </AuthProvider>

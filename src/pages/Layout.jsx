@@ -12,7 +12,7 @@ export default function Layout() {
         <Box maxW={300} w='full'>
           <Sidebar />
         </Box>
-        <Box w='full'>
+        <Box w='full' overflowY='auto'>
           <Outlet />
         </Box>
       </Flex>

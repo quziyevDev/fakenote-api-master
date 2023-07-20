@@ -35,6 +35,49 @@ export const CollectionProvider = ({ children }) => {
       })
   }
 
+  const deleteCollection = (id) => {
+    setIsLoading(true)
+    api
+      .delete(`collection/${id}`, {
+        headers: {
+          Authorization: JSON.parse(localStorage.getItem('accessToken')),
+        },
+      })
+      .then(() => {
+        setIsLoading(false)
+        setCollections(collections.filter((collection) => collection.id !== id))
+      })
+  }
+
+  const updateCollection = (collection) => {
+    setIsLoading(true)
+    api
+      .put(
+        `collection/${collection.id}`,
+        {
+          name: collection.name,
+          color: collection.color,
+        },
+        {
+          headers: {
+            Authorization: JSON.parse(localStorage.getItem('accessToken')),
+          },
+        }
+      )
+      .then((result) => {
+        setIsLoading(false)
+        setCollections(
+          collections.map((collection) => {
+            if (collection.id === result.data.collection.id) {
+              return result.data.collection
+            } else {
+              return collection
+            }
+          })
+        )
+      })
+  }
+
   return (
     <CollectionContext.Provider
       value={{
@@ -42,6 +85,8 @@ export const CollectionProvider = ({ children }) => {
         isLoading,
         getAllCollection,
         createCollection,
+        deleteCollection,
+        updateCollection,
       }}
     >
       {children}

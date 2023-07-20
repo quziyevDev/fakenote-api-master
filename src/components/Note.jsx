@@ -14,10 +14,16 @@ import { Edit2Icon, EyeIcon, Trash2Icon } from 'lucide-react'
 import { useContext } from 'react'
 import { NotesContext } from '../context/NotesContext'
 import { NoteModalContext } from '../context/NoteModalContext'
+import { useNavigate, useParams } from 'react-router-dom'
+import { CollectionNotesContext } from '../context/CollectionNotesContext'
 
 function Note({ note }) {
+  const { id } = useParams()
   const { deleteNote } = useContext(NotesContext)
+  const collectionNotes = useContext(CollectionNotesContext)
   const { openModalForUpdate } = useContext(NoteModalContext)
+  const navigate = useNavigate()
+
   const imgSrc =
     note.coverImage.length < 1
       ? '/Notes.png'
@@ -61,12 +67,19 @@ function Note({ note }) {
           <IconButton
             colorScheme='red'
             size='xs'
-            onClick={() => deleteNote(note.id)}
+            onClick={() => {
+              if (!id) {
+                deleteNote(note.id)
+              } else {
+                collectionNotes.deleteNote(note.id)
+              }
+            }}
             icon={<Trash2Icon size='16' />}
           />
           <IconButton
             colorScheme='teal'
             size='xs'
+            onClick={() => navigate(`note/${note.id}`)}
             icon={<EyeIcon size='16' />}
           />
           <IconButton

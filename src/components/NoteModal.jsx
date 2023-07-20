@@ -14,27 +14,44 @@ import {
 import React, { useContext } from 'react'
 import { NoteModalContext } from '../context/NoteModalContext'
 import { NotesContext } from '../context/NotesContext'
+import { useParams } from 'react-router-dom'
+import { CollectionNotesContext } from '../context/CollectionNotesContext'
 
 export default function NoteModal() {
   const { isOpen, closeModal, noteData, type } = useContext(NoteModalContext)
   const { createNote, updateNote } = useContext(NotesContext)
 
+  const collectionNotes = useContext(CollectionNotesContext)
+
+  const { id } = useParams()
+
   const submitHandler = (event) => {
     event.preventDefault()
     const formData = new FormData(event.target)
     const data = Object.fromEntries(formData.entries())
-    if (type === 'create') {
-      createNote(data)
-    } else if (type === 'update') {
-      updateNote({
-        id: noteData.id,
-        ...data,
-      })
+    if (!id) {
+      if (type === 'create') {
+        createNote(data)
+      } else if (type === 'update') {
+        updateNote({
+          id: noteData.id,
+          ...data,
+        })
+      }
+    } else {
+      if (type === 'create') {
+        collectionNotes.createNote(id, data)
+      } else if (type === 'update') {
+        collectionNotes.updateNote({
+          id: noteData.id,
+          ...data,
+        })
+      }
     }
     event.target.reset()
     closeModal()
   }
-  
+
   return (
     <Modal size='2xl' isOpen={isOpen} onClose={closeModal}>
       <ModalOverlay />
